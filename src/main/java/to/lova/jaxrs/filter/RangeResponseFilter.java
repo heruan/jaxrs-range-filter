@@ -1,4 +1,4 @@
-package to.lova.jersey.filter;
+package to.lova.jaxrs.filter;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,9 +10,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 
 /**
- * 
- * @author Giovanni Lovato <giovanni@lova.to>
- *
+ * A {@link ContainerResponseFilter} capable to handle ranged requests.
  */
 public class RangeResponseFilter implements ContainerResponseFilter {
 
@@ -25,35 +23,30 @@ public class RangeResponseFilter implements ContainerResponseFilter {
     private static final String IF_RANGE = "If-Range";
 
     @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-            throws IOException {
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
 
         responseContext.getHeaders().add(ACCEPT_RANGES, BYTES_RANGE);
 
-        if (requestContext.getHeaders().containsKey(RANGE)) {
-            if (requestContext.getHeaders().containsKey(IF_RANGE)) {
-                String ifRangeHeader = requestContext.getHeaderString(IF_RANGE);
-                if (responseContext.getHeaders().containsKey(HttpHeaders.ETAG)) {
-                    if (responseContext.getHeaderString(HttpHeaders.ETAG).equals(ifRangeHeader)) {
-                        this.applyFilter(requestContext, responseContext);
-                        return;
-                    }
-                }
-                if (responseContext.getHeaders().containsKey(HttpHeaders.LAST_MODIFIED)) {
-                    if (responseContext.getHeaderString(HttpHeaders.LAST_MODIFIED).equals(ifRangeHeader)) {
-                        this.applyFilter(requestContext, responseContext);
-                        return;
-                    }
-                }
-            } else {
+        if (!requestContext.getHeaders().containsKey(RANGE)) {
+            return;
+        } else if (requestContext.getHeaders().containsKey(IF_RANGE)) {
+            String ifRangeHeader = requestContext.getHeaderString(IF_RANGE);
+            if (responseContext.getHeaders().containsKey(HttpHeaders.ETAG)
+                    && responseContext.getHeaderString(HttpHeaders.ETAG).equals(ifRangeHeader)) {
                 this.applyFilter(requestContext, responseContext);
+                return;
             }
+            if (responseContext.getHeaders().containsKey(HttpHeaders.LAST_MODIFIED)
+                    && responseContext.getHeaderString(HttpHeaders.LAST_MODIFIED).equals(ifRangeHeader)) {
+                this.applyFilter(requestContext, responseContext);
+                return;
+            }
+        } else {
+            this.applyFilter(requestContext, responseContext);
         }
-
     }
 
-    private void applyFilter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
-            throws IOException {
+    private void applyFilter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
 
         String rangeHeader = requestContext.getHeaderString(RANGE);
         String contentType = responseContext.getMediaType().toString();
