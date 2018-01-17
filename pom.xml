@@ -4,7 +4,7 @@
 
     <groupId>to.lova.jaxrs</groupId>
     <artifactId>jaxrs-range-filter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>jaxrs-range-filter</name>
     <description>Byte serving support for JAX-RS.</description>
@@ -29,7 +29,7 @@
         <url>scm:git:git@github.com:heruan/jaxrs-range-filter.git</url>
         <connection>scm:git:git@github.com:heruan/jaxrs-range-filter.git</connection>
         <developerConnection>scm:git:git@github.com:heruan/jaxrs-range-filter.git</developerConnection>
-        <tag>1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <issueManagement>
         <system>GitHub</system>
