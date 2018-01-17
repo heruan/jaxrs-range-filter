@@ -1,6 +1,7 @@
 = HTTP Ranged Requests for JAX-RS
 
 image:https://img.shields.io/github/release/heruan/jaxrs-range-filter.svg[link=https://github.com/heruan/jaxrs-range-filter/releases,title=Latest release]
+image:https://img.shields.io/maven-central/v/to.lova.jaxrs/jaxrs-range-filter.svg[title=jaxrs-range-filter]
 image:https://img.shields.io/github/downloads/heruan/jaxrs-range-filter/total.svg[link=https://github.com/heruan/jaxrs-range-filter/archive/master.zip,title=GitHub]
 image:https://img.shields.io/circleci/project/github/heruan/jaxrs-range-filter.svg[link=https://circleci.com/gh/heruan/jaxrs-range-filter,title=CricleCI]
 image:https://img.shields.io/codecov/c/github/heruan/jaxrs-range-filter.svg[link=https://codecov.io/gh/heruan/jaxrs-range-filter,title=Codecov]
@@ -22,6 +23,25 @@ public class MyApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         return Collections.singleton(RangeResponseFilter.class);
+    }
+
+}
+----
+
+[source,java]
+----
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("alphabet")
+public class AlphabetResource {
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String alphabet() {
+        return "abcdefghijklmnopqrstuvwxyz";
     }
 
 }
