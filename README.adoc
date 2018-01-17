@@ -1,0 +1,74 @@
+= HTTP Ranged Requests for JAX-RS
+
+image:https://img.shields.io/github/release/heruan/jaxrs-range-filter.svg[link=https://github.com/heruan/jaxrs-range-filter/releases,title=Latest release]
+image:https://img.shields.io/github/downloads/heruan/jaxrs-range-filter/total.svg[link=https://github.com/heruan/jaxrs-range-filter/archive/master.zip,title=GitHub]
+image:https://img.shields.io/circleci/project/github/heruan/jaxrs-range-filter.svg[link=https://circleci.com/gh/heruan/jaxrs-range-filter,title=CricleCI]
+image:https://img.shields.io/codecov/c/github/heruan/jaxrs-range-filter.svg[link=https://codecov.io/gh/heruan/jaxrs-range-filter,title=Codecov]
+image:https://img.shields.io/github/license/heruan/jaxrs-range-filter.svg[link=http://www.apache.org/licenses/LICENSE-2.0.html,title=Apache License 2.0]
+
+## Example usage
+
+[source,java]
+----
+import java.util.Collections;
+import java.util.Set;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@ApplicationPath("app")
+public class MyApplication extends Application {
+
+    @Override
+    public Set<Class<?>> getClasses() {
+        return Collections.singleton(RangeResponseFilter.class);
+    }
+
+}
+----
+
+Then JAX-RS will serve byte ranges whenever a HTTP `Range` header is present on
+the request, e.g.
+
+[source]
+----
+$ curl -i http://localhost:8080/app/alphabet
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Content-Length: 26
+
+abcdefghijklmnopqrstuvwxyz
+----
+
+[source]
+----
+$ curl -i http://localhost:8080/app/alphabet -H "Range: bytes=6-10"
+HTTP/1.1 206 Partial Content
+Accept-Ranges: bytes
+Content-Range: bytes 6-10/26
+Content-Type: text/plain
+Content-Length: 5
+
+ghijk
+----
+
+[source]
+----
+$ curl -i http://localhost:8080/app/alphabet -H "Range: bytes=6-10,18-"
+HTTP/1.1 206 Partial Content
+Accept-Ranges: bytes
+Content-Type: multipart/byteranges; boundary=VXTwimfDqIB3LRZ2jjQ8vxbSvnGAB2sMn3UVq
+Content-Length: 257
+
+--VXTwimfDqIB3LRZ2jjQ8vxbSvnGAB2sMn3UVq
+Content-Type: text/plain
+Content-Range: bytes 6-10/26
+
+ghijk
+--VXTwimfDqIB3LRZ2jjQ8vxbSvnGAB2sMn3UVq
+Content-Type: text/plain
+Content-Range: bytes 18-26/26
+
+stuvwxyz
+--VXTwimfDqIB3LRZ2jjQ8vxbSvnGAB2sMn3UVq--
+----
