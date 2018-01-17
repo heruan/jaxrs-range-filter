@@ -9,6 +9,15 @@ image:https://img.shields.io/github/license/heruan/jaxrs-range-filter.svg[link=h
 
 ## Example usage
 
+[source,xml]
+----
+<dependency>
+  <groupId>to.lova.jaxrs</groupId>
+  <artifactId>jaxrs-range-filter</artifactId>
+  <version>1.0.0</version>
+</dependency>
+----
+
 [source,java]
 ----
 import java.util.Collections;
