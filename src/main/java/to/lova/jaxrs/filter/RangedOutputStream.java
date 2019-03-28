@@ -37,9 +37,9 @@ public class RangedOutputStream extends OutputStream {
 
         private final ByteArrayOutputStream outputStream;
 
-        private final int from;
+        private final long from;
 
-        private final int to;
+        private final long to;
 
         /**
          * Instantiates a new range.
@@ -49,7 +49,7 @@ public class RangedOutputStream extends OutputStream {
          * @param to
          *            the ending byte index
          */
-        public Range(int from, int to) {
+        public Range(long from, long to) {
             this.outputStream = new ByteArrayOutputStream();
             this.from = from;
             this.to = to;
@@ -62,7 +62,7 @@ public class RangedOutputStream extends OutputStream {
          *            the index to check
          * @return true, if the index is in this range
          */
-        public boolean contains(int index) {
+        public boolean contains(long index) {
             if (this.to == 0) {
                 return (this.from <= index);
             }
@@ -83,7 +83,7 @@ public class RangedOutputStream extends OutputStream {
          *
          * @return the starting index of this range
          */
-        public int getFrom() {
+        public long getFrom() {
             return this.from;
         }
 
@@ -94,7 +94,7 @@ public class RangedOutputStream extends OutputStream {
          *            the index to return if the range end is not bound
          * @return the ending index of this range
          */
-        public Integer getTo(int ifZero) {
+        public Long getTo(long ifZero) {
             return this.to == 0 ? ifZero : this.to;
         }
 
@@ -130,7 +130,7 @@ public class RangedOutputStream extends OutputStream {
 
     private boolean flushed = false;
 
-    private int pos = 0;
+    private long pos = 0;
 
     private final List<Range> ranges = new ArrayList<>();
 
@@ -155,7 +155,7 @@ public class RangedOutputStream extends OutputStream {
         this.accept = acceptRanges[0];
         for (String range : acceptRanges[1].split(",")) {
             String[] bounds = range.split("-");
-            this.ranges.add(new Range(Integer.valueOf(bounds[0]), bounds.length == 2 ? Integer.valueOf(bounds[1]) : 0));
+            this.ranges.add(new Range(Long.valueOf(bounds[0]), bounds.length == 2 ? Long.valueOf(bounds[1]) : 0));
         }
         this.headers = headers;
         this.contentType = contentType;
